@@ -67,9 +67,9 @@ server.post('/get-details', function (req, res) {
             responseFromAPI.on('data', function (chunk) {
                 let weather_info = JSON.parse(chunk)['query'];
                 //let weather_info = JSON.parse(chunk)['query']['results']['channel']['item']['condition'];
-                console.log(weather_info.results.channel.item.condition.temp);
+                //console.log(weather_info.results.channel.item.condition.temp);
                 //console.log(weather_info.results.channel.item.forecast[0].text);
-                if(weather_info === undefined){
+                if(weather_info.count == 0){
                     //console.log("weather_info is empty");
                     return res.json({
                         speech: 'Sorry! Weather not found for ' + cityName ,
