@@ -196,7 +196,17 @@ server.post('/get-details', function (req, res) {
                 });
             }
         });
+    } else if (countryName != undefined && countryName != '') {
+        fetch_country_pop(countryName, function (result) {
+            if (result !== undefined) {
+                return res.json({
+                    speech: result,
+                    displayText: result
+                });
+            }
+        });
     } 
+    
 });
 
 server.listen((process.env.PORT || 8000), function () {
