@@ -39,10 +39,10 @@ function fetch_weather_info(cityName, callback) {
 }
 
 function fetch_country_pop(countryName, callback) {
-    let path = book_host + '/svc/semantic/v2/geocodes/query.json?api-key=156d157106e44dfa8e2d4495236604bb&name=' + 
-     countryName;
+    let path = book_host + '/svc/semantic/v2/geocodes/query.json?api-key=156d157106e44dfa8e2d4495236604bb&name=' +
+        countryName;
     let dataToSend = '';
-    let country_info = '';    
+    let country_info = '';
     http.get(path, function (responseFromAPI) {
         responseFromAPI.on('data', function (chunk) {
             if (chunk != undefined) {
@@ -56,11 +56,11 @@ function fetch_country_pop(countryName, callback) {
                 callback(dataToSend);
             }
             else {
-                dataToSend = 'Total population in ' + countryName + ': ' + country_info.results[0].population + ','
-                + 'latitute: ' + country_info.results[0].latitude + ',longitude: ' + country_info.results[0].longitude 
-                + ',country code: ' + country_info.results[0].country_code + ' and time zone id: ' + 
-                country_info.results[0].time_zone_id;
-                    //'and country code :' + country_info.results.country_code;          
+                dataToSend = 'Total population in ' + countryName + 'is ' + country_info.results[0].population + ', '
+                    + 'latitute: ' + country_info.results[0].latitude + ', longitude: ' + country_info.results[0].longitude
+                    + ', country code: ' + country_info.results[0].country_code + ' and time zone: ' +
+                    country_info.results[0].time_zone_id;
+                //'and country code :' + country_info.results.country_code;          
                 //console.log("Reached in Else");
                 callback(dataToSend);
             }
@@ -120,7 +120,7 @@ function fetch_book_details(bookType, callback) {
 }
 
 function fetch_book_reviews(bookName, callback) {
-    let path = book_host + '/svc/books/v3/reviews.json?api-key=7dfc493d35bd4c87aff6f67a60e24b8c&title=' + bookName.toLowerCase();
+    let path = book_host + '/svc/books/v3/reviews.json?api-key=7dfc493d35bd4c87aff6f67a60e24b8c&title="' + bookName.toLowerCase() + '"';
     let dataToSend = '';
     let book_info = '';
     //Fetching data from NYTimes best-seller list
@@ -133,10 +133,10 @@ function fetch_book_reviews(bookName, callback) {
         responseFromAPI.on('end', function () {
             book_info = JSON.parse(book_info);
             if (book_info === undefined || book_info.status != 'OK' || book_info == '' || book_info.num_results == 0) {
-                dataToSend = "Sorry! couldn't find the review for "+ bookName +". Could you be more specific?\nExample: 'reviews for Steve Jobs' or 'reviews for Angels and Demons'?";
+                dataToSend = "Sorry! couldn't find the review for " + bookName + ". Could you be more specific?\nExample: 'reviews for Steve Jobs' or 'reviews for Angels and Demons'?";
                 callback(dataToSend);
             } else {
-                dataToSend = "Below is the summmary for " +  book_info.results[0].book_title + ' wriiten by ' + book_info.results[0].book_author + " and reviewed by " + book_info.results[0].byline;
+                dataToSend = "Below is the summmary for " + book_info.results[0].book_title + ' wriiten by ' + book_info.results[0].book_author + " and reviewed by " + book_info.results[0].byline;
                 dataToSend += "\n" + book_info.results[0].summary;
                 dataToSend += "\n\nFor more please click on the below link:";
                 dataToSend += "\n" + book_info.results[0].url;
@@ -156,7 +156,7 @@ server.post('/get-details', function (req, res) {
     let bookName = req.body.result.parameters.bookName;
     let countryName = req.body.result.parameters.countryName;
 
-    if (cityName == undefined && bookType == undefined && countryName == undefined ) {
+    if (cityName == undefined && bookType == undefined && countryName == undefined && (bookFlag == undefined || bookName == undefined)) {
         return res.json({
             speech: 'Sorry! Please try again',
             displayText: 'Sorry! Please try again'
@@ -208,8 +208,8 @@ server.post('/get-details', function (req, res) {
                 });
             }
         });
-    } 
-    
+    }
+
 });
 
 server.listen((process.env.PORT || 8000), function () {
