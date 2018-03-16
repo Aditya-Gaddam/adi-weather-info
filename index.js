@@ -38,6 +38,35 @@ function fetch_weather_info(cityName, callback) {
     });
 }
 
+function fetch_country_pop(countryName, callback) {
+     let path = book_host + '/svc/semantic/v2/geocodes/query.json?api-key=156d157106e44dfa8e2d4495236604bb';
+    let dataToSend = '';
+    let country_info = '';    
+    http.get(path, function (responseFromAPI) {
+        responseFromAPI.on('data', function (chunk) {
+            if (chunk != undefined) {
+                weather_info += chunk;
+            }
+        })
+        responseFromAPI.on('end', function () {
+            country_info = JSON.parse(country_info);
+            if (country_info === undefined || country_info.num_results == 0) {
+                dataToSend = 'Sorry! no results found for ' + countryName;
+                callback(dataToSend);
+            }
+            else {
+                dataToSend = 'Total population in ' + countryName + '-' + country_info.results.population + ','
+                + 'with latitute' + country_info.results.latitude 'and longitude ' + country_info.results.longitude ;
+                    //'and country code :' + country_info.results.country_code;          
+                //console.log("Reached in Else");
+                callback(dataToSend);
+            }
+        })
+    }, (error) => {
+        dataToSend = 'Sorry! Weather not found for ' + cityName;
+        callback(dataToSend);
+    });
+}
 function fetch_book_details(bookType, callback) {
     let path = book_host + '/svc/books/v3/lists/overview.json?api-key=7dfc493d35bd4c87aff6f67a60e24b8c';
     let dataToSend = '';
@@ -122,6 +151,7 @@ server.post('/get-details', function (req, res) {
     let bookType = req.body.result.parameters.bookType;
     let bookFlag = req.body.result.parameters.book;
     let bookName = req.body.result.parameters.bookName;
+    let countryName = req.body.result.parameters.countryName;
 
     if (cityName === undefined && bookType === undefined) {
         return res.json({
@@ -166,7 +196,15 @@ server.post('/get-details', function (req, res) {
                 });
             }
         });
-    }
+    } else if(countryName != undefined && countryName != '') {
+        fetch_country_pop(countryName, function (result) {
+            if (result !== undefined) {
+                return res.json({
+                    speech: result,
+                    displayText: result
+                });
+            }
+        });
 });
 
 server.listen((process.env.PORT || 8000), function () {
