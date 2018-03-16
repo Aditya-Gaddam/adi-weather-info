@@ -57,7 +57,7 @@ function fetch_country_pop(countryName, callback) {
             else {
                 dataToSend = 'Total population in ' + countryName + ' - ' + country_info.results[0].population + ','
                 + ' latitute : ' + country_info.results[0].latitude + ', longitude : ' + country_info.results[0].longitude 
-                + ', country code : ' + country_info.results[0].country_code + ' and time zone - ' + 
+                + ', country code : ' + country_info.results[0].country_code + ' and time zone : ' + 
                 country_info.results[0].time_zone_id;
                     //'and country code :' + country_info.results.country_code;          
                 //console.log("Reached in Else");
