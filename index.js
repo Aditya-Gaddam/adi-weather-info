@@ -39,13 +39,13 @@ function fetch_weather_info(cityName, callback) {
 }
 
 function fetch_country_pop(countryName, callback) {
-    let path = book_host + '/svc/semantic/v2/geocodes/query.json?api-key=156d157106e44dfa8e2d4495236604bb';
+    let path = book_host + '/svc/semantic/v2/geocodes/query.json?api-key=156d157106e44dfa8e2d4495236604bb&name=' + countryName ;
     let dataToSend = '';
     let country_info = '';    
     http.get(path, function (responseFromAPI) {
         responseFromAPI.on('data', function (chunk) {
             if (chunk != undefined) {
-                weather_info += chunk;
+                country_info += chunk;
             }
         })
         responseFromAPI.on('end', function () {
@@ -55,8 +55,10 @@ function fetch_country_pop(countryName, callback) {
                 callback(dataToSend);
             }
             else {
-                dataToSend = 'Total population in ' + countryName + '-' + country_info.results.population + ','
-                + 'with latitute' + country_info.results.latitude 'and longitude ' + country_info.results.longitude ;
+                dataToSend = 'Total population in ' + countryName + '-' + country_info.results[0].population + ','
+                + 'latitute' + country_info.results[0].latitude + ',longitude-' + country_info.results[0].longitude 
+                + ',country code : ' + country_info.results[0].country_code + ' and time zone id ' + 
+                country_info.results[0].time_zone_id;
                     //'and country code :' + country_info.results.country_code;          
                 //console.log("Reached in Else");
                 callback(dataToSend);
@@ -153,7 +155,7 @@ server.post('/get-details', function (req, res) {
     let bookName = req.body.result.parameters.bookName;
     let countryName = req.body.result.parameters.countryName;
 
-    if (cityName === undefined && bookType === undefined) {
+    if (cityName == undefined && bookType == undefined && countryName == undefined ) {
         return res.json({
             speech: 'Sorry! Please try again',
             displayText: 'Sorry! Please try again'
