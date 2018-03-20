@@ -120,7 +120,7 @@ function fetch_book_details(bookType, callback) {
 }
 
 function fetch_book_reviews(bookName, callback) {
-    let path = book_host + '/svc/books/v3/reviews.json?api-key=7dfc493d35bd4c87aff6f67a60e24b8c&title="' + bookName.toLowerCase() + '"';
+    let path = book_host + '/svc/books/v3/reviews.json?api-key=7dfc493d35bd4c87aff6f67a60e24b8c&title=' + bookName+ '';
     let dataToSend = '';
     let book_info = '';
     //Fetching data from NYTimes best-seller list
