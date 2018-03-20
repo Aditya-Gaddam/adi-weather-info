@@ -133,7 +133,7 @@ function fetch_book_reviews(bookName, callback) {
         responseFromAPI.on('end', function () {
             book_info = JSON.parse(book_info);
             if (book_info === undefined || book_info.status != 'OK' || book_info == '' || book_info.num_results == 0) {
-                dataToSend = "Sorry! couldn't find the review for " + bookName + ". Could you be more specific?\nExample: 'reviews for Steve Jobs' or 'reviews for Angels and Demons'?";
+                dataToSend = "Sorry! couldn't find the review for " + bookName + ". Could you be more specific?\nExample: 'reviews for Steve Jobs'";
                 callback(dataToSend);
             } else {
                 dataToSend = "Below is the summmary for " + book_info.results[0].book_title + ' wriiten by ' + book_info.results[0].book_author + " and reviewed by " + book_info.results[0].byline;
